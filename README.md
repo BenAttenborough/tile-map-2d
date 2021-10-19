@@ -11,3 +11,16 @@ I'm thinking the tilemap2d class will take a table of values on initialisation. 
 * Map array - a two-dimensional array which represents the map to be rendered
 * Spritemap - a spritemap which is a png representing all the tiles
 * Tile size - A width and height for each tile. The engine will cut out tiles from the sprite map depending on these variables
+
+# Todo
+
+* Verify the playfield table is valid before using it and show error if not. (Probably check the number of columns * eidth of tile = width of table)
+* Work out file IO (see [Here](https://love2d.org/wiki/love.filesystem))
+
+# Notes
+
+Draw modes:
+fill
+Draw filled shape.
+line
+Draw outlined shape.
