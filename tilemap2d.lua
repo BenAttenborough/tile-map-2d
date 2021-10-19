@@ -47,12 +47,19 @@ end
 function TileMap2d:load()
     local ok, chunk, result
     ok, chunk = pcall( love.filesystem.load, "tilefile" ) -- load the chunk safely
-    if not ok then -- will be false if there is an error
-        print('The following error happened: ' .. tostring(result))
+    if not ok then
+        print('The following error happened: ' .. tostring(chunk))
     else
-        print('The result of loading is: ' .. tostring(result))
+        ok, result = pcall(chunk) -- execute the chunk safely
+        if not ok then -- will be false if there is an error
+            print('The following error happened: ' .. tostring(result))
+        else
+            print('The result of loading is: ' .. tostring(result))
+        end
     end
 end
+
+
 
 function TileMap2d:serializeTable(val, name, skipnewlines, depth)
     skipnewlines = skipnewlines or false
