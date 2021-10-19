@@ -19,6 +19,8 @@ I'm thinking the tilemap2d class will take a table of values on initialisation. 
 
 # Notes
 
+Files saved to `/Users/benattenborough/Library/Application Support/LOVE/tile-map-2d`
+
 Draw modes:
 fill
 Draw filled shape.
