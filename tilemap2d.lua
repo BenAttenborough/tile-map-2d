@@ -35,7 +35,8 @@ function TileMap2d:draw(offsetx, offsety, width, height)
 end
 
 function TileMap2d:save()
-    local data = self:serializeTable(self.map)
+    local data = self:serializeMap(self.map)
+    print(data)
     local success, message =love.filesystem.write( "tilefile", data)
     if success then 
         print ('file created')
@@ -45,47 +46,67 @@ function TileMap2d:save()
 end
 
 function TileMap2d:load()
-    local ok, chunk, result
-    ok, chunk = pcall( love.filesystem.load, "tilefile" ) -- load the chunk safely
-    if not ok then
-        print('The following error happened: ' .. tostring(chunk))
-    else
-        ok, result = pcall(chunk) -- execute the chunk safely
-        if not ok then -- will be false if there is an error
-            print('The following error happened: ' .. tostring(result))
-        else
-            print('The result of loading is: ' .. tostring(result))
-        end
+    -- local ok, chunk, result
+    -- ok, chunk = pcall( love.filesystem.load, "tilefile" ) -- load the chunk safely
+    -- if not ok then
+    --     print('The following error happened: ' .. tostring(chunk))
+    -- else
+    --     ok, result = pcall(chunk) -- execute the chunk safely
+    --     if not ok then -- will be false if there is an error
+    --         print('The following error happened: ' .. tostring(result))
+    --     else
+    --         print('The result of loading is: ' .. tostring(result))
+    --     end
+    -- end
+    local mapString = love.filesystem.read( 'tilefile' ) 
+    print('result: ' .. mapString)
+    for word in string.gmatch(mapString, '([^,]+)') do
+        print(word)
     end
+    local firstComma = string.find(mapString, ',')
+    local mapWidth = string.match(mapString, '([^,]+)')
+    local mapOnlyString = string.sub(mapString, firstComma + 1)
+    print('First comma: ' ..  firstComma)
+    print('mapWidth : ' ..  mapWidth)
+    print('mapOnlyString : ' ..  mapOnlyString)
+    -- Should be enough info to decode the string into a table
 end
 
-
-
-function TileMap2d:serializeTable(val, name, skipnewlines, depth)
-    skipnewlines = skipnewlines or false
-    depth = depth or 0
-
-    local tmp = string.rep(" ", depth)
-
-    if name then tmp = tmp .. name .. " = " end
-
-    if type(val) == "table" then
-        tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
-
-        for k, v in pairs(val) do
-            tmp =  tmp .. TileMap2d:serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
+function TileMap2d:serializeMap(mapData)
+    local data = table.maxn(mapData[1]) .. ','
+    for x = 1,table.maxn(mapData) do
+        for y = 1,table.maxn(mapData[x]) do
+            data = data .. mapData[x][y] .. ','
         end
-
-        tmp = tmp .. string.rep(" ", depth) .. "}"
-    elseif type(val) == "number" then
-        tmp = tmp .. tostring(val)
-    elseif type(val) == "string" then
-        tmp = tmp .. string.format("%q", val)
-    elseif type(val) == "boolean" then
-        tmp = tmp .. (val and "true" or "false")
-    else
-        tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
     end
-
-    return tmp
+    return data
 end
+
+-- function TileMap2d:serializeTable(val, name, skipnewlines, depth)
+--     skipnewlines = skipnewlines or false
+--     depth = depth or 0
+
+--     local tmp = string.rep(" ", depth)
+
+--     if name then tmp = tmp .. name .. " = " end
+
+--     if type(val) == "table" then
+--         tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
+
+--         for k, v in pairs(val) do
+--             tmp =  tmp .. TileMap2d:serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
+--         end
+
+--         tmp = tmp .. string.rep(" ", depth) .. "}"
+--     elseif type(val) == "number" then
+--         tmp = tmp .. tostring(val)
+--     elseif type(val) == "string" then
+--         tmp = tmp .. string.format("%q", val)
+--     elseif type(val) == "boolean" then
+--         tmp = tmp .. (val and "true" or "false")
+--     else
+--         tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
+--     end
+
+--     return tmp
+-- end

@@ -27,6 +27,8 @@ Draw filled shape.
 line
 Draw outlined shape.
 
+https://stackoverflow.com/questions/6075262/lua-table-tostringtablename-and-table-fromstringstringtable-functions
+
 ## Latest
 
-Trying to work out why load isn't working...
+Need to work on decoding the map string into a table. There should be enough info to do this in tilemap2d.lua
