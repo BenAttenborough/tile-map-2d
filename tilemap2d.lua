@@ -10,7 +10,11 @@ function TileMap2d:init(config)
     self.tiles = {}
     self.offsetx = 20
     self.offsety = 50
-    for i=1,config['spriteCount']
+    self.spriteCount = config['spriteCount']
+    self.uix = 50
+    self.uiy = 50
+    self.editMode = true
+    for i=1, self.spriteCount
     do
         self.tiles[i] = love.graphics.newQuad( (i - 1) * self.tw , 0, self.tw, self.th, self.tileSheet )
     end
@@ -52,18 +56,6 @@ function TileMap2d:save()
 end
 
 function TileMap2d:load()
-    -- local ok, chunk, result
-    -- ok, chunk = pcall( love.filesystem.load, "tilefile" ) -- load the chunk safely
-    -- if not ok then
-    --     print('The following error happened: ' .. tostring(chunk))
-    -- else
-    --     ok, result = pcall(chunk) -- execute the chunk safely
-    --     if not ok then -- will be false if there is an error
-    --         print('The following error happened: ' .. tostring(result))
-    --     else
-    --         print('The result of loading is: ' .. tostring(result))
-    --     end
-    -- end
     local mapString = love.filesystem.read( 'tilefile' ) 
     print('result: ' .. mapString)
     for word in string.gmatch(mapString, '([^,]+)') do
@@ -143,5 +135,13 @@ function TileMap2d:detectClick(x,y)
 end
 
 function TileMap2d:renderUI(x,y)
-    
+    self.uix = x
+    self.uiy = y
+    for i = 1, self.spriteCount do
+        local tile = self.tiles[i]
+        love.graphics.draw(self.tileSheet, tile, self.uix + (i * 20), self.uiy)
+    end
+end
+
+function TileMap2d:detectUIClick()
 end
