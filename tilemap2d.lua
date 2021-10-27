@@ -1,5 +1,7 @@
 TileMap2d = Class{}
 
+require 'libs.tilemap2d.Tile'
+
 function TileMap2d:init(config)
     self.map = config['map']
     self.tileSheet = love.graphics.newImage(config['spriteSheet'])
@@ -143,5 +145,18 @@ function TileMap2d:renderUI(x,y)
     end
 end
 
-function TileMap2d:detectUIClick()
+function TileMap2d:convertMap(map)
+    for col = 1, #map[1] do
+        for row = 1, #map do
+            local spriteValue = map[col][row]
+            local tileConfig = {
+                ['x'] = col - 1,
+                ['y'] = row - 1,
+                ['width'] = self.tw,
+                ['height'] = self.th,
+                ['sprite'] = self.tiles[spriteValue]
+            }
+            map[col][row] = Tile(tileConfig)
+        end
+    end
 end

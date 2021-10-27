@@ -31,4 +31,4 @@ https://stackoverflow.com/questions/6075262/lua-table-tostringtablename-and-tabl
 
 ## Latest
 
-Need to work on decoding the map string into a table. There should be enough info to do this in tilemap2d.lua
+Bit of confusion about quads...
