@@ -31,4 +31,5 @@ https://stackoverflow.com/questions/6075262/lua-table-tostringtablename-and-tabl
 
 ## Latest
 
-Bit of confusion about quads...
+Look into onRelease down and up
+See https://www.reddit.com/r/love2d/comments/42hgy6/help_no_clue_how_to_solve_mouse_clicking/
