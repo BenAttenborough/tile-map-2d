@@ -16,6 +16,4 @@ function Tile:mousereleased(x, y, button)
 end
 
 function Tile:render(offsetX, offsetY)
-    -- draw x + offsetX, y + offsetY
-    -- love.graphics.draw(self.tileSheet, tile, offsetx, offsety)
 end

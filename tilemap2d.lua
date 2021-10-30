@@ -5,14 +5,14 @@ require 'libs.tilemap2d.Tile'
 function TileMap2d:init(config)
     self.map = self:convertMap(config)
     -- self.map = config['map']
-    -- self.tileSheet = love.graphics.newImage(config['spriteSheet'])
-    -- self.tw = config['spriteSize']['width']
-    -- self.th = config['spriteSize']['height']
+    self.tileSheet = love.graphics.newImage(config['spriteSheet'])
+    self.tw = config['spriteSize']['width']
+    self.th = config['spriteSize']['height']
     -- self.mw = self.tw * #self.map[1]
     -- self.mh = self.th * #self.map
     -- self.tiles = {}
-    -- self.offsetx = 20
-    -- self.offsety = 50
+    self.offsetx = 20
+    self.offsety = 50
     -- self.spriteCount = config['spriteCount']
     -- self.uix = 50
     -- self.uiy = 50
@@ -24,21 +24,20 @@ function TileMap2d:init(config)
 end
 
 function TileMap2d:draw() 
-    -- local offsetx = self.offsetx
-    -- local offsety = self.offsety
-    -- local originalOffsetX = offsetx
-    -- local tile = self.tiles[1]
-    -- for x = 1,table.maxn(self.map)
-    -- do
-    --     for y = 1,table.maxn(self.map[1])
-    --     do
-    --         tile = self.tiles[self.map[x][y]]
-    --         love.graphics.draw(self.tileSheet, tile, offsetx, offsety)
-    --         offsetx = offsetx + self.tw
-    --     end
-    --     offsetx = originalOffsetX
-    --     offsety = offsety + self.th
-    -- end
+    local offsetx = self.offsetx
+    local offsety = self.offsety
+    local originalOffsetX = offsetx
+    for x = 1,table.maxn(self.map)
+    do
+        for y = 1,table.maxn(self.map[1])
+        do
+            local tile = self.map[x][y]
+            love.graphics.draw(self.tileSheet, tile.sprite, offsetx, offsety)
+            offsetx = offsetx + tile.width
+        end
+        offsetx = originalOffsetX
+        offsety = offsety + self.th
+    end
 end
 
 function TileMap2d:save()
@@ -153,8 +152,6 @@ function TileMap2d:convertMap(config)
     
     for col = 1, #map[1] do
         for row = 1, #map do
-            -- print("col: " .. col .. " row: " .. row)
-            -- print(map[row][col])
             local spriteValue = map[row][col]
             local tileConfig = {
                 ['x'] = col - 1,
@@ -166,12 +163,5 @@ function TileMap2d:convertMap(config)
             map[row][col] = Tile(tileConfig)
         end
     end
-    -- print(map)
-    -- print(map[1])
-    -- print(map[1][1])
-    -- print(map[1][1].x)
-    -- print(map[1][1].y)
-    -- print(map[1][1].width)
-    -- print(map[1][1].height)
     return map
 end
