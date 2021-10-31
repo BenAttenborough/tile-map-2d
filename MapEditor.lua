@@ -5,6 +5,7 @@ require 'objects.Button'
 function MapEditor:init(config)
     self.saveButton = Button(20,200,100,14,'Save',self.saveHandler)
     self.loadButton = Button(20,225,100,14,'Load',self.loadHandler)
+    self.tiles = self:createTileButtons(config)
 end
 
 function MapEditor:render()
@@ -30,4 +31,19 @@ end
 function MapEditor:click(x, y, button)
     self.saveButton:mouseClick(x, y, button)
     self.loadButton:mouseClick(x, y, button)
+end
+
+function MapEditor:createTileButtons(config)
+    local tiles = {}
+    for i = 1, config['spriteCount'] do
+        local tileConfig = {
+            ['x'] = ((i - 1) + 20) * config['spriteSize']['width'],
+            ['y'] = 50,
+            ['width'] = config['spriteSize']['width'],
+            ['height'] = config['spriteSize']['height'],
+            ['sprite'] = i
+        }
+        tiles[i] = Tile(tileConfig)
+    end
+    return tiles
 end
