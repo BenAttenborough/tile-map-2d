@@ -1,36 +1,26 @@
 TileMap2d = Class{}
 
+require 'libs.tilemap2d.Tile'
+
 function TileMap2d:init(config)
-    self.map = config['map']
+    self.map = self:convertMap(config)
     self.tileSheet = love.graphics.newImage(config['spriteSheet'])
     self.tw = config['spriteSize']['width']
     self.th = config['spriteSize']['height']
-    self.tiles = {}
-    for i=1,config['spriteCount']
-    do
-        self.tiles[i] = love.graphics.newQuad( (i - 1) * self.tw , 0, self.tw, self.th, self.tileSheet )
-    end
+    self.offsetx = config['offsetX']
+    self.offsety = config['offsetY']
+    self.mw = self.tw * #self.map[1]
+    self.mh = self.th * #self.map
 end
 
-function TileMap2d:draw(offsetx, offsety, width, height) 
-    originalOffsetX = offsetx
-    tile = self.tiles[1]
+function TileMap2d:draw() 
     for x = 1,table.maxn(self.map)
     do
         for y = 1,table.maxn(self.map[1])
         do
-            tile = self.tiles[self.map[x][y]]
-            love.graphics.draw(self.tileSheet, tile, offsetx, offsety)
-            r, g, b, a = love.graphics.getColor( )
-            -- if x == self.hoveredTile[1] and y == self.hoveredTile[2] then
-            --     r, g, b, a = love.graphics.getColor( )
-            --     love.graphics.setColor(1,1,1)
-            --     love.graphics.rectangle("line", offsetx, offsety, self.tileWidth, self.tileHeight)
-            -- end
-            offsetx = offsetx + self.tw
+            local tile = self.map[x][y]
+            love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
         end
-        offsetx = originalOffsetX
-        offsety = offsety + self.th
     end
 end
 
@@ -46,30 +36,22 @@ function TileMap2d:save()
 end
 
 function TileMap2d:load()
-    -- local ok, chunk, result
-    -- ok, chunk = pcall( love.filesystem.load, "tilefile" ) -- load the chunk safely
-    -- if not ok then
-    --     print('The following error happened: ' .. tostring(chunk))
-    -- else
-    --     ok, result = pcall(chunk) -- execute the chunk safely
-    --     if not ok then -- will be false if there is an error
-    --         print('The following error happened: ' .. tostring(result))
-    --     else
-    --         print('The result of loading is: ' .. tostring(result))
-    --     end
-    -- end
     local mapString = love.filesystem.read( 'tilefile' ) 
-    print('result: ' .. mapString)
-    for word in string.gmatch(mapString, '([^,]+)') do
-        print(word)
-    end
     local firstComma = string.find(mapString, ',')
     local mapWidth = string.match(mapString, '([^,]+)')
     local mapOnlyString = string.sub(mapString, firstComma + 1)
-    print('First comma: ' ..  firstComma)
-    print('mapWidth : ' ..  mapWidth)
-    print('mapOnlyString : ' ..  mapOnlyString)
-    -- Should be enough info to decode the string into a table
+    local mapData = {}
+    for number in string.gmatch(mapOnlyString, '([^,]+)') do
+        table.insert(mapData, number)
+    end
+    local mapHeight = #mapData / mapWidth
+    local finalMap = {}
+    for row = 1, mapHeight do
+        mapData[row] = {}
+        for col = 1, mapWidth do
+            table.insert(finalMap[row], mapData[col]) 
+        end
+    end
 end
 
 function TileMap2d:serializeMap(mapData)
@@ -82,31 +64,60 @@ function TileMap2d:serializeMap(mapData)
     return data
 end
 
--- function TileMap2d:serializeTable(val, name, skipnewlines, depth)
---     skipnewlines = skipnewlines or false
---     depth = depth or 0
+function TileMap2d:debug()
+    local x,y = push:toGame(love.mouse.getX(),love.mouse.getY())
+    love.graphics.print("Mouse: " .. x .. " " .. y, 10, 10)
+    -- love.graphics.print("TW:" .. self.tw .. " TH:" .. self.th .. " MW:" .. self.mw .. " MH:" .. self.mh, 180, 10)
+end
 
---     local tmp = string.rep(" ", depth)
+function TileMap2d:isWithinBounds(x,y)
+    if x < self.offsetx then return false end
+    if x > self.offsetx + self.mw then return false end
+    if y < self.offsety then return false end
+    if y > self.offsety + self.mh then return false end
+    return true
+end
 
---     if name then tmp = tmp .. name .. " = " end
+function TileMap2d:detectClick(x,y,button)
+    if self:isWithinBounds(x,y) then
+        print("In bounds")
+        for col = 1, #self.map[1]
+        do
+            for row = 1, #self.map
+            do
+                if button == 1 and self.map[row][col]:isClickWithinTile(x,y) then
+                    print("You clicked on tile " .. col .. " " .. row)
+                end
+            end
+        end
+    else
+        print("OO bounds")
+    end
+end
 
---     if type(val) == "table" then
---         tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
-
---         for k, v in pairs(val) do
---             tmp =  tmp .. TileMap2d:serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
---         end
-
---         tmp = tmp .. string.rep(" ", depth) .. "}"
---     elseif type(val) == "number" then
---         tmp = tmp .. tostring(val)
---     elseif type(val) == "string" then
---         tmp = tmp .. string.format("%q", val)
---     elseif type(val) == "boolean" then
---         tmp = tmp .. (val and "true" or "false")
---     else
---         tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
---     end
-
---     return tmp
--- end
+function TileMap2d:convertMap(config)
+    local map = config['map']
+    local tw = config['spriteSize']['width']
+    local th = config['spriteSize']['height']
+    local tileSheet = love.graphics.newImage(config['spriteSheet'])
+    local tiles = {}
+    for i=1, config['spriteCount']
+    do
+        tiles[i] = love.graphics.newQuad( (i - 1) * tw , 0, tw, th, tileSheet )
+    end
+    
+    for col = 1, #map[1] do
+        for row = 1, #map do
+            local spriteValue = map[row][col]
+            local tileConfig = {
+                ['x'] = config['offsetX'] + ((col - 1) * tw ),
+                ['y'] = config['offsetY'] + ((row - 1) * th ),
+                ['width'] = config['spriteSize']['width'],
+                ['height'] = config['spriteSize']['height'],
+                ['sprite'] = tiles[spriteValue]
+            }
+            map[row][col] = Tile(tileConfig)
+        end
+    end
+    return map
+end

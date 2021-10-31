@@ -31,4 +31,7 @@ https://stackoverflow.com/questions/6075262/lua-table-tostringtablename-and-tabl
 
 ## Latest
 
-Need to work on decoding the map string into a table. There should be enough info to do this in tilemap2d.lua
+Add offset to config
+Make map editing a seperate library
+Propogate click handling from playState to tilemap2d
+    If click is within tile area check which tile had been clicked and print result
