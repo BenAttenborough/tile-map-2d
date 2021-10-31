@@ -8,12 +8,10 @@ function Tile:init(config)
     self.sprite = config['sprite']
 end
 
-function Tile:mousereleased(x, y, button)
-    x,y = push:toGame(x,y)
-    if button == 1 and x >= self.left and x <= self.right and y >= self.top and y <= self.bottom then
-        print("Tile " .. self.x .. " " .. self.y .. " clicked")
-    end
-end
-
-function Tile:render(offsetX, offsetY)
+function Tile:isClickWithinTile(userX, userY)
+    if userX < self.x then return false end
+    if userX > self.x + self.width then return false end
+    if userY < self.y then return false end
+    if userY > self.y + self.width then return false end
+    return true
 end

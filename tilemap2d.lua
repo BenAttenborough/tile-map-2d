@@ -4,39 +4,29 @@ require 'libs.tilemap2d.Tile'
 
 function TileMap2d:init(config)
     self.map = self:convertMap(config)
-    -- self.map = config['map']
     self.tileSheet = love.graphics.newImage(config['spriteSheet'])
     self.tw = config['spriteSize']['width']
     self.th = config['spriteSize']['height']
-    -- self.mw = self.tw * #self.map[1]
-    -- self.mh = self.th * #self.map
-    -- self.tiles = {}
-    self.offsetx = 20
-    self.offsety = 50
-    -- self.spriteCount = config['spriteCount']
-    -- self.uix = 50
-    -- self.uiy = 50
-    -- self.editMode = true
-    -- for i=1, self.spriteCount
-    -- do
-    --     self.tiles[i] = love.graphics.newQuad( (i - 1) * self.tw , 0, self.tw, self.th, self.tileSheet )
-    -- end
+    self.offsetx = config['offsetX']
+    self.offsety = config['offsetY']
+    self.mw = self.tw * #self.map[1]
+    self.mh = self.th * #self.map
 end
 
 function TileMap2d:draw() 
-    local offsetx = self.offsetx
-    local offsety = self.offsety
+    -- local offsetx = self.offsetx
+    -- local offsety = self.offsety
     local originalOffsetX = offsetx
     for x = 1,table.maxn(self.map)
     do
         for y = 1,table.maxn(self.map[1])
         do
             local tile = self.map[x][y]
-            love.graphics.draw(self.tileSheet, tile.sprite, offsetx, offsety)
-            offsetx = offsetx + tile.width
+            love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
+            -- offsetx = offsetx + tile.width
         end
-        offsetx = originalOffsetX
-        offsety = offsety + self.th
+        -- offsetx = originalOffsetX
+        -- offsety = offsety + self.th
     end
 end
 
@@ -103,30 +93,28 @@ function TileMap2d:isWithinBounds(x,y)
     return true
 end
 
-function TileMap2d:isWithinTile(tileX, tileY, userX, userY)
-    if userX < tileX then return false end
-    if userX > tileX + self.tw then return false end
-    if userY < tileY then return false end
-    if userY > tileY + self.tw then return false end
-    return true
-end
+-- function TileMap2d:isWithinTile(tileX, tileY, userX, userY)
+--     if userX < tileX then return false end
+--     if userX > tileX + self.tw then return false end
+--     if userY < tileY then return false end
+--     if userY > tileY + self.tw then return false end
+--     return true
+-- end
 
-function TileMap2d:detectClick(x,y)
-    if self:isWithinBounds(push:toGame(x,y)) then
-        -- print("In bounds")
-        for col = 1, self.mw
+function TileMap2d:detectClick(x,y,button)
+    if self:isWithinBounds(x,y) then
+        print("In bounds")
+        for col = 1, #self.map[1]
         do
-            for row = 1, self.mh
+            for row = 1, #self.map
             do
-                local xStart = self.offsetx + ((col - 1) * self.tw)
-                local yStart = self.offsety + ((row - 1) * self.th)
-                if self:isWithinTile(xStart, yStart, push:toGame(x,y)) then
-                    print("Within tile r: " .. row .. " column: " .. col)
+                if button == 1 and self.map[row][col]:isClickWithinTile(x,y) then
+                    print("You clicked on tile " .. col .. " " .. row)
                 end
             end
         end
     else
-        -- print("OO bounds")
+        print("OO bounds")
     end
 end
 
@@ -154,8 +142,8 @@ function TileMap2d:convertMap(config)
         for row = 1, #map do
             local spriteValue = map[row][col]
             local tileConfig = {
-                ['x'] = col - 1,
-                ['y'] = row - 1,
+                ['x'] = config['offsetX'] + ((col - 1) * tw ),
+                ['y'] = config['offsetY'] + ((row - 1) * th ),
                 ['width'] = config['spriteSize']['width'],
                 ['height'] = config['spriteSize']['height'],
                 ['sprite'] = tiles[spriteValue]
