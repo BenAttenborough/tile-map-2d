@@ -80,7 +80,6 @@ end
 
 function TileMap2d:detectClick(x,y,button)
     if self:isWithinBounds(x,y) then
-        print("In bounds")
         for col = 1, #self.map[1]
         do
             for row = 1, #self.map
@@ -90,8 +89,6 @@ function TileMap2d:detectClick(x,y,button)
                 end
             end
         end
-    else
-        print("OO bounds")
     end
 end
 
