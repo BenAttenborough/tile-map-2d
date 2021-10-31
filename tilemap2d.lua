@@ -14,19 +14,13 @@ function TileMap2d:init(config)
 end
 
 function TileMap2d:draw() 
-    -- local offsetx = self.offsetx
-    -- local offsety = self.offsety
-    local originalOffsetX = offsetx
     for x = 1,table.maxn(self.map)
     do
         for y = 1,table.maxn(self.map[1])
         do
             local tile = self.map[x][y]
             love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
-            -- offsetx = offsetx + tile.width
         end
-        -- offsetx = originalOffsetX
-        -- offsety = offsety + self.th
     end
 end
 
@@ -43,23 +37,14 @@ end
 
 function TileMap2d:load()
     local mapString = love.filesystem.read( 'tilefile' ) 
-    print('result: ' .. mapString)
-    for word in string.gmatch(mapString, '([^,]+)') do
-        print(word)
-    end
     local firstComma = string.find(mapString, ',')
     local mapWidth = string.match(mapString, '([^,]+)')
     local mapOnlyString = string.sub(mapString, firstComma + 1)
-    print('First comma: ' ..  firstComma)
-    print('mapWidth : ' ..  mapWidth)
-    print('mapOnlyString : ' ..  mapOnlyString)
     local mapData = {}
     for number in string.gmatch(mapOnlyString, '([^,]+)') do
         table.insert(mapData, number)
     end
     local mapHeight = #mapData / mapWidth
-    print('map width: ' .. mapWidth)
-    print('map height: ' .. mapHeight)
     local finalMap = {}
     for row = 1, mapHeight do
         mapData[row] = {}
@@ -93,14 +78,6 @@ function TileMap2d:isWithinBounds(x,y)
     return true
 end
 
--- function TileMap2d:isWithinTile(tileX, tileY, userX, userY)
---     if userX < tileX then return false end
---     if userX > tileX + self.tw then return false end
---     if userY < tileY then return false end
---     if userY > tileY + self.tw then return false end
---     return true
--- end
-
 function TileMap2d:detectClick(x,y,button)
     if self:isWithinBounds(x,y) then
         print("In bounds")
@@ -116,15 +93,6 @@ function TileMap2d:detectClick(x,y,button)
     else
         print("OO bounds")
     end
-end
-
-function TileMap2d:renderUI(x,y)
-    -- self.uix = x
-    -- self.uiy = y
-    -- for i = 1, self.spriteCount do
-    --     local tile = self.tiles[i]
-    --     love.graphics.draw(self.tileSheet, tile, self.uix + (i * 20), self.uiy)
-    -- end
 end
 
 function TileMap2d:convertMap(config)
