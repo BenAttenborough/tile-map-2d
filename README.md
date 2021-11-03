@@ -31,7 +31,9 @@ https://stackoverflow.com/questions/6075262/lua-table-tostringtablename-and-tabl
 
 ## Latest
 
-Add offset to config
-Make map editing a seperate library
-Propogate click handling from playState to tilemap2d
-    If click is within tile area check which tile had been clicked and print result
+Map editor should use tilemap2d itself
+It should show directory listing of maps
+    Allow user to select map
+    Load the map
+    Save the map
+    Create new map

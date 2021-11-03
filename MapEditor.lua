@@ -5,7 +5,8 @@ require 'objects.Button'
 function MapEditor:init(config)
     self.saveButton = Button(20,200,100,14,'Save',self.saveHandler)
     self.loadButton = Button(20,225,100,14,'Load',self.loadHandler)
-    self.tiles = self:createTileButtons(config)
+    -- This next is broken because of incorrect sprite config (number instead of quad)
+    -- self.tiles = self:createTileButtons(config)
 end
 
 function MapEditor:render()

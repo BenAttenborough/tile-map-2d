@@ -26,7 +26,6 @@ end
 
 function TileMap2d:save()
     local data = self:serializeMap(self.map)
-    print(data)
     local success, message =love.filesystem.write( "tilefile", data)
     if success then 
         print ('file created')
@@ -93,6 +92,7 @@ function TileMap2d:detectClick(x,y,button)
 end
 
 function TileMap2d:convertMap(config)
+    -- print("Tabke to string: ", table_to_string(config))
     local map = config['map']
     local tw = config['spriteSize']['width']
     local th = config['spriteSize']['height']
@@ -118,3 +118,4 @@ function TileMap2d:convertMap(config)
     end
     return map
 end
+
