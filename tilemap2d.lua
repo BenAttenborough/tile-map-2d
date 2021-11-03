@@ -13,7 +13,7 @@ function TileMap2d:init(config)
     self.mh = self.th * #self.map
 end
 
-function TileMap2d:draw() 
+function TileMap2d:draw()
     for x = 1,table.maxn(self.map)
     do
         for y = 1,table.maxn(self.map[1])
@@ -92,7 +92,6 @@ function TileMap2d:detectClick(x,y,button)
 end
 
 function TileMap2d:convertMap(config)
-    -- print("Tabke to string: ", table_to_string(config))
     local map = config['map']
     local tw = config['spriteSize']['width']
     local th = config['spriteSize']['height']
