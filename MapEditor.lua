@@ -1,6 +1,6 @@
 MapEditor = Class{}
 
-require 'objects.Button'
+require 'libs.tilemap2d.Button'
 require 'libs.tilemap2d.tilemap2d'
 
 function MapEditor:init(config)
