@@ -6,13 +6,16 @@ require 'libs.tilemap2d.tilemap2d'
 function MapEditorUI:init(config)
     self.offsetX = config['offsetX']
     self.offsetY = config['offsetY']
+    self.height = config['tileHeight']
+    self.width = config['tileWidth'] * config['tileCount']
     self.tileSheet = love.graphics.newImage(config['spriteSheet'])
     self.tileButtons = self:createTileButtons(config)
+    self.padding = 2
     self.prevMouseDown = false
 end
 
 function MapEditorUI:render()
-    love.graphics.rectangle("fill", self.offsetX ,self.offsetY ,50,50)
+    love.graphics.rectangle("line", self.offsetX - self.padding, self.offsetY - self.padding, self.width + (self.padding * 2), self.height + (self.padding * 2))
     for i = 1,table.maxn(self.tileButtons)
     do
         local tile = self.tileButtons[i]
@@ -25,7 +28,6 @@ function MapEditorUI:createTileButtons(config)
     local tiles = {}
     local tw = config['tileWidth']
     local th = config['tileHeight']
-    -- local tileSheet = love.graphics.newImage(config['spriteSheet'])
     for i=1, config['tileCount']
     do
         tiles[i] = love.graphics.newQuad( (i - 1) * tw , 0, tw, th, self.tileSheet )
@@ -41,4 +43,44 @@ function MapEditorUI:createTileButtons(config)
         tileButtons[i] = Tile(tileConfig)
     end
     return tileButtons
+end
+
+function MapEditorUI:isWithinBounds(x,y)
+    if x < self.offsetX then return false end
+    if x > self.offsetX + self.width then return false end
+    if y < self.offsetY then return false end
+    if y > self.offsetY + self.height then return false end
+    return true
+end
+
+function MapEditorUI:update(dt)
+    if love.mouse.isDown(1) and not self.prevMouseDown then
+        local x,y = Push:toGame(love.mouse.getX(), love.mouse.getY())
+        self:detectClick(x,y)
+        -- self.loadButton:mouseClick(x, y, 1)
+        -- self.saveButton:mouseClick(x, y, 1)
+        -- if self.mapLoaded then
+        --     local res = self.TileMap2d:detectClick(x, y, 1)
+        --     if res.success then
+        --         print("You clicked on tile2 " .. res.mapX .. " " .. res.mapY)
+        --     end
+        -- end
+    end
+    self.prevMouseDown = love.mouse.isDown(1)
+end
+
+function MapEditorUI:detectClick(x,y,button)
+    if self:isWithinBounds(x,y) then
+        print("Clicked on tile UI")
+        for i = 1, #self.tileButtons
+        do
+            if self.tileButtons[i]:isClickWithinTile(x,y) then
+                print("You clicked on title type " .. i)
+            end
+        end
+    else
+        local res = {}
+        res["success"] = false
+        return res
+    end
 end

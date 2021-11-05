@@ -23,6 +23,9 @@ function MapEditor:render()
 end
 
 function MapEditor:update(dt)
+    if self.mapLoaded then
+        self.selectionUI:update(dt)
+    end
     if love.mouse.isDown(1) and not self.prevMouseDown then
         local x,y = Push:toGame(love.mouse.getX(), love.mouse.getY())
         self.loadButton:mouseClick(x, y, 1)
@@ -43,10 +46,8 @@ function MapEditor:save()
 end
 
 function MapEditor:load()
-    print("Load clicked")
-    -- TileMap2d:load()
     local tileConfig = {}
-    tileConfig['map'] = map
+    tileConfig['map'] = self:getDefaultMap()
     tileConfig['spriteSheet'] = 'sprites/tilemap.png'
     tileConfig['spriteSize'] = {}
     tileConfig['spriteSize']['width'] = 10
@@ -74,4 +75,19 @@ end
 function MapEditor:click(x, y, button)
     self.saveButton:mouseClick(x, y, button)
     self.loadButton:mouseClick(x, y, button)
+end
+
+function MapEditor:getDefaultMap()
+    local row1 = {1,1,1,2,2,3,1,3,2,3,1,1}
+    local row2 = {1,2,3,2,2,3,1,4,1,3,1,1}
+    local row3 = {1,1,4,2,2,3,1,1,1,1,1,1}
+    local row4 = {1,1,1,1,2,3,1,3,4,1,1,1}
+    local row5 = {1,3,1,2,4,1,1,3,2,3,1,1}
+    local map = {}
+    map[1] = row1
+    map[2] = row2
+    map[3] = row3
+    map[4] = row4
+    map[5] = row5
+    return map
 end
