@@ -27,15 +27,15 @@ end
 function TileMap2d:save()
     local data = self:serializeMap(self.map)
     local success, message =love.filesystem.write( "tilefile", data)
-    if success then 
+    if success then
         print ('file created')
-    else 
+    else
         print ('file not created: '..message)
     end
 end
 
 function TileMap2d:load()
-    local mapString = love.filesystem.read( 'tilefile' ) 
+    local mapString = love.filesystem.read( 'tilefile' )
     local firstComma = string.find(mapString, ',')
     local mapWidth = string.match(mapString, '([^,]+)')
     local mapOnlyString = string.sub(mapString, firstComma + 1)
@@ -48,7 +48,7 @@ function TileMap2d:load()
     for row = 1, mapHeight do
         mapData[row] = {}
         for col = 1, mapWidth do
-            table.insert(finalMap[row], mapData[col]) 
+            table.insert(finalMap[row], mapData[col])
         end
     end
 end
@@ -84,10 +84,18 @@ function TileMap2d:detectClick(x,y,button)
             for row = 1, #self.map
             do
                 if button == 1 and self.map[row][col]:isClickWithinTile(x,y) then
-                    print("You clicked on tile " .. col .. " " .. row)
+                    local res = {}
+                    res["success"] = true
+                    res["mapX"] = col
+                    res["mapY"] = row
+                    return res
                 end
             end
         end
+    else
+        local res = {}
+        res["success"] = false
+        return res
     end
 end
 
@@ -101,7 +109,7 @@ function TileMap2d:convertMap(config)
     do
         tiles[i] = love.graphics.newQuad( (i - 1) * tw , 0, tw, th, tileSheet )
     end
-    
+
     for col = 1, #map[1] do
         for row = 1, #map do
             local spriteValue = map[row][col]

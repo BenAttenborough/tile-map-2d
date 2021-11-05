@@ -9,7 +9,8 @@ function MapEditor:init(config)
     self.saveButton = Button(20,225,100,14,'Save','save',self)
     self.prevMouseDown = false
     -- This next is broken because of incorrect sprite config (number instead of quad)
-    -- self.tiles = self:createTileButtons(config)
+    self.tileButtons = {}
+    self.tileSheet = {}
     self.mapLoaded = false
 end
 
@@ -18,6 +19,7 @@ function MapEditor:render()
     self.loadButton:draw()
     if self.mapLoaded then
         self.TileMap2d:draw()
+        self:renderUI()
     end
 end
 
@@ -26,6 +28,12 @@ function MapEditor:update(dt)
         local x,y = Push:toGame(love.mouse.getX(), love.mouse.getY())
         self.loadButton:mouseClick(x, y, 1)
         self.saveButton:mouseClick(x, y, 1)
+        if self.mapLoaded then
+            local res = self.TileMap2d:detectClick(x, y, 1)
+            if res.success then
+                print("You clicked on tile2 " .. res.mapX .. " " .. res.mapY)
+            end
+        end
     end
     self.prevMouseDown = love.mouse.isDown(1)
 end
@@ -48,6 +56,8 @@ function MapEditor:load()
     tileConfig['offsetX'] = 20
     tileConfig['offsetY'] = 50
     self.TileMap2d = TileMap2d(tileConfig)
+    self.tileSheet = love.graphics.newImage(tileConfig['spriteSheet'])
+    self.tileButtons = self:createTileButtons(tileConfig)
     self.mapLoaded = true
 end
 
@@ -62,16 +72,46 @@ function MapEditor:click(x, y, button)
 end
 
 function MapEditor:createTileButtons(config)
+    local tileButtons = {}
     local tiles = {}
+    local tw = config['spriteSize']['width']
+    local th = config['spriteSize']['height']
+    -- local tileSheet = love.graphics.newImage(config['spriteSheet'])
+    for i=1, config['spriteCount']
+    do
+        tiles[i] = love.graphics.newQuad( (i - 1) * tw , 0, tw, th, self.tileSheet )
+    end
     for i = 1, config['spriteCount'] do
         local tileConfig = {
-            ['x'] = ((i - 1) + 20) * config['spriteSize']['width'],
+            ['x'] = ((i - 1) + 20) * tw,
             ['y'] = 50,
-            ['width'] = config['spriteSize']['width'],
-            ['height'] = config['spriteSize']['height'],
-            ['sprite'] = i
+            ['width'] = tw,
+            ['height'] = th,
+            ['sprite'] = tiles[i]
         }
-        tiles[i] = Tile(tileConfig)
+        tileButtons[i] = Tile(tileConfig)
     end
-    return tiles
+    return tileButtons
+end
+
+function MapEditor:renderUI()
+    for i = 1,table.maxn(self.tileButtons)
+    do
+        local tile = self.tileButtons[i]
+        love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
+    end
+end
+
+-- function MapEditor:clickWithinUI(x,y)
+--     local offsetx = 20
+--     local offsety = 50
+--     local uiw = 
+--     if x < offsetx then return false end
+--     if x > offsetx + uiw then return false end
+--     if y < offsety then return false end
+--     if y > offsety + uih then return false end
+--     return true
+-- end
+
+function MapEditor:detectUIClick()
 end
