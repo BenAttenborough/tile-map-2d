@@ -11,11 +11,13 @@ function MapEditor:init(config)
     self.saveButton = Button(20,225,100,14,'Save','save',self)
     self.prevMouseDown = false
     self.mapLoaded = false
+    self.selectedSpriteNumber = 1
 end
 
 function MapEditor:render()
     self.saveButton:draw()
     self.loadButton:draw()
+    self:debug()
     if self.mapLoaded then
         self.TileMap2d:draw()
         self.selectionUI:render()
@@ -33,7 +35,7 @@ function MapEditor:update(dt)
         if self.mapLoaded then
             local res = self.TileMap2d:detectClick(x, y, 1)
             if res.success then
-                print("You clicked on tile2 " .. res.mapX .. " " .. res.mapY)
+                self.TileMap2d:updateMap(res.mapY, res.mapX, self.selectedSpriteNumber)
             end
         end
     end
@@ -63,6 +65,7 @@ function MapEditor:load()
     selectionUIConfig['tileWidth'] = tileConfig['spriteSize']['width']
     selectionUIConfig['tileHeight'] = tileConfig['spriteSize']['height']
     selectionUIConfig['tileCount'] = tileConfig['spriteCount']
+    selectionUIConfig['mapEditorContext'] = self
     self.selectionUI = MapEditorUI(selectionUIConfig)
     self.mapLoaded = true
 end
@@ -90,4 +93,8 @@ function MapEditor:getDefaultMap()
     map[4] = row4
     map[5] = row5
     return map
+end
+
+function MapEditor:debug()
+    love.graphics.print("Selected tile no. " .. self.selectedSpriteNumber, 10, 245)
 end

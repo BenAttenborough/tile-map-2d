@@ -8,6 +8,7 @@ function MapEditorUI:init(config)
     self.offsetY = config['offsetY']
     self.height = config['tileHeight']
     self.width = config['tileWidth'] * config['tileCount']
+    self.mapEditorContext = config['mapEditorContext']
     self.tileSheet = love.graphics.newImage(config['spriteSheet'])
     self.tileButtons = self:createTileButtons(config)
     self.padding = 2
@@ -15,6 +16,7 @@ function MapEditorUI:init(config)
 end
 
 function MapEditorUI:render()
+    -- self:debug()
     love.graphics.rectangle("line", self.offsetX - self.padding, self.offsetY - self.padding, self.width + (self.padding * 2), self.height + (self.padding * 2))
     for i = 1,table.maxn(self.tileButtons)
     do
@@ -57,14 +59,6 @@ function MapEditorUI:update(dt)
     if love.mouse.isDown(1) and not self.prevMouseDown then
         local x,y = Push:toGame(love.mouse.getX(), love.mouse.getY())
         self:detectClick(x,y)
-        -- self.loadButton:mouseClick(x, y, 1)
-        -- self.saveButton:mouseClick(x, y, 1)
-        -- if self.mapLoaded then
-        --     local res = self.TileMap2d:detectClick(x, y, 1)
-        --     if res.success then
-        --         print("You clicked on tile2 " .. res.mapX .. " " .. res.mapY)
-        --     end
-        -- end
     end
     self.prevMouseDown = love.mouse.isDown(1)
 end
@@ -76,6 +70,7 @@ function MapEditorUI:detectClick(x,y,button)
         do
             if self.tileButtons[i]:isClickWithinTile(x,y) then
                 print("You clicked on title type " .. i)
+                self.mapEditorContext.selectedSpriteNumber = i
             end
         end
     else

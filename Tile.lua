@@ -15,3 +15,7 @@ function Tile:isClickWithinTile(userX, userY)
     if userY > self.y + self.width then return false end
     return true
 end
+
+function Tile:setTileSprite(spriteNumber, tileSheet)
+    self.sprite = love.graphics.newQuad( (spriteNumber - 1) * self.width , 0, self.width, self.height, tileSheet )
+end

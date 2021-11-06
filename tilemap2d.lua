@@ -126,3 +126,6 @@ function TileMap2d:convertMap(config)
     return map
 end
 
+function TileMap2d:updateMap(row, col, spriteNumber)
+    self.map[row][col]:setTileSprite(spriteNumber, self.tileSheet)
+end
