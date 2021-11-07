@@ -49,7 +49,7 @@ end
 
 function MapEditor:load()
     local tileConfig = {}
-    tileConfig['map'] = self:getDefaultMap()
+    tileConfig['map'] = self:loadFromFile()
     tileConfig['spriteSheet'] = 'sprites/tilemap.png'
     tileConfig['spriteSize'] = {}
     tileConfig['spriteSize']['width'] = 10
@@ -97,4 +97,39 @@ end
 
 function MapEditor:debug()
     love.graphics.print("Selected tile no. " .. self.selectedSpriteNumber, 10, 245)
+end
+
+function MapEditor:loadFromFile()
+    local mapString = love.filesystem.read( 'tilefile' )
+    local firstComma = string.find(mapString, ',')
+    local mapWidth = string.match(mapString, '([^,]+)')
+    local mapOnlyString = string.sub(mapString, firstComma + 1)
+    local mapData = {}
+    for number in string.gmatch(mapOnlyString, '([^,]+)') do
+        table.insert(mapData, number)
+    end
+
+    local mapHeight = #mapData / mapWidth
+    local finalMap = {}
+    local j = 1
+    finalMap[1] = {}
+    for i = 1, #mapData do
+        table.insert(finalMap[j], tonumber(mapData[i]))
+        if i % mapWidth == 0 and j ~= mapHeight then
+            j = j + 1
+            finalMap[j] = {}
+        end
+    end
+
+    return finalMap
+end
+
+function MapEditor:debugMap(map)
+    local result = ""
+    for row = 1, #map do
+        for col = 1, #map[1] do
+            result = result .. map[row][col] .. ", "
+        end
+        result = result .. " | "
+    end
 end

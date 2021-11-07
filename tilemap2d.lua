@@ -34,24 +34,7 @@ function TileMap2d:save()
     end
 end
 
-function TileMap2d:load()
-    local mapString = love.filesystem.read( 'tilefile' )
-    local firstComma = string.find(mapString, ',')
-    local mapWidth = string.match(mapString, '([^,]+)')
-    local mapOnlyString = string.sub(mapString, firstComma + 1)
-    local mapData = {}
-    for number in string.gmatch(mapOnlyString, '([^,]+)') do
-        table.insert(mapData, number)
-    end
-    local mapHeight = #mapData / mapWidth
-    local finalMap = {}
-    for row = 1, mapHeight do
-        mapData[row] = {}
-        for col = 1, mapWidth do
-            table.insert(finalMap[row], mapData[col])
-        end
-    end
-end
+
 
 function TileMap2d:serializeMap(mapData)
     local data = table.maxn(mapData[1]) .. ','
