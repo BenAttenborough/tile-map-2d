@@ -43,8 +43,7 @@ function MapEditor:update(dt)
 end
 
 function MapEditor:save()
-    print("Save clicked")
-    -- TileMap2d:save()
+    self.TileMap2d:save()
 end
 
 function MapEditor:load()
@@ -132,4 +131,14 @@ function MapEditor:debugMap(map)
         end
         result = result .. " | "
     end
+end
+
+function MapEditor:serializeMap(mapData)
+    local data = table.maxn(mapData[1]) .. ','
+    for x = 1,table.maxn(mapData) do
+        for y = 1,table.maxn(mapData[x]) do
+            data = data .. mapData[x][y] .. ','
+        end
+    end
+    return data
 end

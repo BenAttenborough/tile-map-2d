@@ -6,6 +6,7 @@ function Tile:init(config)
     self.width = config['width']
     self.height = config['height']
     self.sprite = config['sprite']
+    self.spriteNumber = config['spriteNumber']
 end
 
 function Tile:isClickWithinTile(userX, userY)
@@ -18,4 +19,5 @@ end
 
 function Tile:setTileSprite(spriteNumber, tileSheet)
     self.sprite = love.graphics.newQuad( (spriteNumber - 1) * self.width , 0, self.width, self.height, tileSheet )
+    self.spriteNumber = spriteNumber
 end

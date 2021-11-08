@@ -36,11 +36,11 @@ end
 
 
 
-function TileMap2d:serializeMap(mapData)
+function TileMap2d:serializeMap(mapData)    
     local data = table.maxn(mapData[1]) .. ','
     for x = 1,table.maxn(mapData) do
         for y = 1,table.maxn(mapData[x]) do
-            data = data .. mapData[x][y] .. ','
+            data = data .. mapData[x][y]['spriteNumber'] .. ','
         end
     end
     return data
@@ -101,7 +101,8 @@ function TileMap2d:convertMap(config)
                 ['y'] = config['offsetY'] + ((row - 1) * th ),
                 ['width'] = config['spriteSize']['width'],
                 ['height'] = config['spriteSize']['height'],
-                ['sprite'] = tiles[spriteValue]
+                ['sprite'] = tiles[spriteValue],
+                ['spriteNumber'] = spriteValue
             }
             map[row][col] = Tile(tileConfig)
         end
