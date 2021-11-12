@@ -13,15 +13,30 @@ function TileMap2d:init(config)
     self.mh = self.th * #self.map
 end
 
-function TileMap2d:draw()
-    for x = 1,table.maxn(self.map)
+function TileMap2d:draw(offsetX, offsetY)
+    
+    -- Some clever shit needed to work out which tiles to draw
+    local tileToStart = 1
+    if offsetX < 0 then
+        tileToStart = math.floor(math.abs(offsetX / self.tw)) + 1
+    end
+    local numberOfTiles = #self.map[1]
+    local numberOfTilesPassed = math.floor(offsetX / self.tw)
+    local tileToEnd = numberOfTiles - numberOfTilesPassed
+
+    for y = 1,table.maxn(self.map)
     do
-        for y = 1,table.maxn(self.map[1])
+        for x = 1,table.maxn(self.map[1])
         do
-            local tile = self.map[x][y]
-            love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
+            if x >= tileToStart and x<= tileToEnd then
+                local tile = self.map[y][x]
+                love.graphics.draw(self.tileSheet, tile.sprite, tile.x + offsetX, tile.y + offsetY)
+            end
         end
     end
+    love.graphics.setColor(0,0,0)
+    love.graphics.rectangle("fill", (self.offsetx - self.tw), self.offsety, self.tw, self.mh )
+    love.graphics.rectangle("fill", (self.offsetx + self.mw), self.offsety, self.tw, self.mh )
 end
 
 function TileMap2d:save()

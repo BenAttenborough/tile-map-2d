@@ -3,6 +3,7 @@ MapEditor = Class{}
 require 'libs.tilemap2d.Button'
 require 'libs.tilemap2d.tilemap2d'
 require 'libs.tilemap2d.editor.MapEditorUI'
+require 'libs.tilemap2d.input'
 
 function MapEditor:init(config)
     self.TileMap2d = {}
@@ -12,6 +13,8 @@ function MapEditor:init(config)
     self.prevMouseDown = false
     self.mapLoaded = false
     self.selectedSpriteNumber = 1
+    self.tileMapOffsetX = 0
+    self.tileMapOffsetY = 0
 end
 
 function MapEditor:render()
@@ -19,7 +22,7 @@ function MapEditor:render()
     self.loadButton:draw()
     self:debug()
     if self.mapLoaded then
-        self.TileMap2d:draw()
+        self.TileMap2d:draw(self.tileMapOffsetX, self.tileMapOffsetY)
         self.selectionUI:render()
     end
 end
@@ -27,6 +30,14 @@ end
 function MapEditor:update(dt)
     if self.mapLoaded then
         self.selectionUI:update(dt)
+        if love.keyboard.wasPressed("right") then
+            self.tileMapOffsetX = self.tileMapOffsetX - 1
+            love.keyboard.reset()
+        end
+        if love.keyboard.wasPressed("left") then
+            self.tileMapOffsetX = self.tileMapOffsetX + 1
+            love.keyboard.reset()
+        end
     end
     if love.mouse.isDown(1) and not self.prevMouseDown then
         local x,y = Push:toGame(love.mouse.getX(), love.mouse.getY())
