@@ -12,9 +12,11 @@ function MapEditor:init(config)
     self.saveButton = Button(20,225,100,14,'Save','save',self)
     self.prevMouseDown = false
     self.mapLoaded = false
+    self.loadWindowOpen = false
     self.selectedSpriteNumber = 1
     self.tileMapOffsetX = 0
     self.tileMapOffsetY = 0
+    self.buttons = {}
 end
 
 function MapEditor:render()
@@ -24,6 +26,9 @@ function MapEditor:render()
     if self.mapLoaded then
         self.TileMap2d:draw(self.tileMapOffsetX, self.tileMapOffsetY)
         self.selectionUI:render()
+    end
+    if self.loadWindowOpen then
+        self:renderLoadWindow()
     end
 end
 
@@ -43,6 +48,11 @@ function MapEditor:update(dt)
         local x,y = Push:toGame(love.mouse.getX(), love.mouse.getY())
         self.loadButton:mouseClick(x, y, 1)
         self.saveButton:mouseClick(x, y, 1)
+        if self.loadWindowOpen then
+            for k, button in ipairs(self.buttons) do
+                button:mouseClick(x, y, 1)
+            end
+        end
         if self.mapLoaded then
             local res = self.TileMap2d:detectClick(x, y, 1)
             if res.success then
@@ -57,7 +67,42 @@ function MapEditor:save()
     self.TileMap2d:save()
 end
 
+-- function MapEditor:returnFileFunction(file)
+-- end
+
+function MapEditor:renderLoadWindow()
+    love.graphics.setColor(1,1,1)
+    love.graphics.rectangle('line', 10,10,200,100)
+    love.graphics.setColor(0,0,0)
+    love.graphics.rectangle('fill', 11,11,198,98)
+    love.graphics.setColor(1,1,1)
+    
+    
+    for k, button in ipairs(self.buttons) do
+        -- print("Button")
+        button:draw()
+    end
+end
+
+function MapEditor:testLoad(test)
+    print(test)
+end
+
+function MapEditor:getFiles()
+    local dir = "levels"
+    local files = love.filesystem.getDirectoryItems(dir)
+    local y = 15
+    for k, file in ipairs(files) do
+        table.insert(self.buttons, Button(15,y,100,14,file,'testLoad',self,file))
+        y = y + 20
+    end
+end
+
 function MapEditor:load()
+    self:getFiles()
+    self.loadWindowOpen = true
+
+
     local tileConfig = {}
     tileConfig['map'] = self:loadFromFile()
     tileConfig['spriteSheet'] = 'sprites/tilemap.png'
@@ -83,12 +128,16 @@ end
 function MapEditor:mousereleased(x, y, button)
     self.saveButton:mousereleased(x, y, button)
     self.loadButton:mousereleased(x, y, button)
+    for k, item in ipairs(self.buttons) do
+        item:mousereleased(x, y, button)
+        -- print("Button down")
+    end
 end
 
-function MapEditor:click(x, y, button)
-    self.saveButton:mouseClick(x, y, button)
-    self.loadButton:mouseClick(x, y, button)
-end
+-- function MapEditor:click(x, y, button)
+--     self.saveButton:mouseClick(x, y, button)
+--     self.loadButton:mouseClick(x, y, button)
+-- end
 
 function MapEditor:getDefaultMap()
     local row1 = {1,1,1,2,2,3,1,3,2,3,1,1}
