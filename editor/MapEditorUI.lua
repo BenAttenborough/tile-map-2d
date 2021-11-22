@@ -1,8 +1,5 @@
 MapEditorUI = Class{}
 
-require 'libs.tilemap2d.Button'
-require 'libs.tilemap2d.tilemap2d'
-
 function MapEditorUI:init(config)
     self.offsetX = config['offsetX']
     self.offsetY = config['offsetY']
@@ -79,3 +76,5 @@ function MapEditorUI:detectClick(x,y,button)
         return res
     end
 end
+
+return MapEditorUI

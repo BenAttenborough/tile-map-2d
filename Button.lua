@@ -2,19 +2,19 @@ Button = Class{}
 
 -- Note buttons are "debounced", you need to click AND release on the button to activate it
 
-function Button:init(x,y,width,height,label,clickHandler,boundObj,optonalParam)
-    self.label = label
-    self.left = x
-    self.top = y
-    self.right = x + width
-    self.bottom = y + height
-    self.width = width
-    self.height = height
-    self.saveButtonCoords = {x, y, width, height}
-    self.clickHandler = clickHandler
+function Button:init(config)
+    self.label = config.label
+    self.left = config.x
+    self.top = config.y
+    self.right = config.x + config.width
+    self.bottom = config.y + config.height
+    self.width = config.width
+    self.height = config.height
+    self.saveButtonCoords = {config.x, config.y, config.width, config.height}
+    self.clickHandler = config.clickHandler
+    self.boundObj = config.boundObj
+    self.optionalParam = config.optonalParam or nil
     self.clicked = false
-    self.boundObj = boundObj
-    self.optionalParam = optonalParam or nil
 end
 
 function Button:draw()
@@ -43,3 +43,5 @@ function Button:mouseClick(x, y, button)
         print("Btn clicked")
     end
 end
+
+return Button

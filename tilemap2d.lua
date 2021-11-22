@@ -1,6 +1,6 @@
 TileMap2d = Class{}
 
-require 'libs.tilemap2d.Tile'
+local Tile = require 'libs.tilemap2d.Tile'
 
 function TileMap2d:init(config)
     self.map = self:convertMap(config)
@@ -128,3 +128,5 @@ end
 function TileMap2d:updateMap(row, col, spriteNumber)
     self.map[row][col]:setTileSprite(spriteNumber, self.tileSheet)
 end
+
+return TileMap2d

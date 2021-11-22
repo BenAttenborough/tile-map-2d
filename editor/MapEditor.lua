@@ -1,15 +1,31 @@
 MapEditor = Class{}
 
-require 'libs.tilemap2d.Button'
-require 'libs.tilemap2d.tilemap2d'
-require 'libs.tilemap2d.editor.MapEditorUI'
+local Button = require 'libs.tilemap2d.Button'
+local TileMap2d = require 'libs.tilemap2d.TileMap2d'
+local MapEditorUI = require 'libs.tilemap2d.editor.MapEditorUI'
+
+-- TO DO move this to main
 require 'libs.tilemap2d.input'
 
 function MapEditor:init(config)
     self.TileMap2d = {}
     self.selectionUI = {}
-    self.loadButton = Button(20,200,100,14,'Load','load',self)
-    self.saveButton = Button(20,225,100,14,'Save','save',self)
+    self.loadButton = Button({
+        x = 20,
+        y = 200,
+        width = 100,
+        height = 14,
+        label = 'Load',
+        clickHandler = 'load',
+        boundObj = self})
+    self.saveButton = Button({
+        x = 20,
+        y = 225,
+        width = 100,
+        height = 14,
+        label = 'Save',
+        clickHandler = 'save',
+        boundObj = self})
     self.prevMouseDown = false
     self.mapLoaded = false
     self.loadWindowOpen = false
@@ -67,9 +83,6 @@ function MapEditor:save()
     self.TileMap2d:save()
 end
 
--- function MapEditor:returnFileFunction(file)
--- end
-
 function MapEditor:renderLoadWindow()
     love.graphics.setColor(1,1,1)
     love.graphics.rectangle('line', 10,10,200,100)
@@ -79,7 +92,6 @@ function MapEditor:renderLoadWindow()
     
     
     for k, button in ipairs(self.buttons) do
-        -- print("Button")
         button:draw()
     end
 end
@@ -93,14 +105,22 @@ function MapEditor:getFiles()
     local files = love.filesystem.getDirectoryItems(dir)
     local y = 15
     for k, file in ipairs(files) do
-        table.insert(self.buttons, Button(15,y,100,14,file,'testLoad',self,file))
+        table.insert(self.buttons, Button({
+            x = 15,
+            y = y,
+            width = 100,
+            height = 14,
+            label = file,
+            clickHandler = 'testLoad',
+            boundObj = self,
+            optionalParam = file}))
         y = y + 20
     end
 end
 
 function MapEditor:load()
-    self:getFiles()
-    self.loadWindowOpen = true
+    -- self:getFiles()
+    -- self.loadWindowOpen = true
 
 
     local tileConfig = {}
@@ -202,3 +222,5 @@ function MapEditor:serializeMap(mapData)
     end
     return data
 end
+
+return MapEditor
