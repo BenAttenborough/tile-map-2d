@@ -49,8 +49,6 @@ function TileMap2d:save()
     end
 end
 
-
-
 function TileMap2d:serializeMap(mapData)    
     local data = table.maxn(mapData[1]) .. ','
     for x = 1,table.maxn(mapData) do

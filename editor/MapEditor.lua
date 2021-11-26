@@ -11,7 +11,7 @@ function MapEditor:init(config)
     self.TileMap2d = {}
     self.selectionUI = {}
     self.loadButton = Button({
-        x = 20,
+        x = 0,
         y = 200,
         width = 100,
         height = 14,
@@ -19,8 +19,8 @@ function MapEditor:init(config)
         clickHandler = 'load',
         boundObj = self})
     self.saveButton = Button({
-        x = 20,
-        y = 225,
+        x = 0,
+        y = 215,
         width = 100,
         height = 14,
         label = 'Save',
@@ -134,8 +134,8 @@ function MapEditor:load()
     tileConfig['offsetY'] = 50
     self.TileMap2d = TileMap2d(tileConfig)
     local selectionUIConfig = {}
-    selectionUIConfig['offsetX'] = 200
-    selectionUIConfig['offsetY'] = 50
+    selectionUIConfig['offsetX'] = 0
+    selectionUIConfig['offsetY'] = 165
     selectionUIConfig['spriteSheet'] = tileConfig['spriteSheet']
     selectionUIConfig['tileWidth'] = tileConfig['spriteSize']['width']
     selectionUIConfig['tileHeight'] = tileConfig['spriteSize']['height']

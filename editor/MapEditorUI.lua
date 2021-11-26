@@ -1,5 +1,8 @@
 MapEditorUI = Class{}
 
+local Tile = require 'libs.tilemap2d.Tile'
+local helper = require "libs.tilemap2d.helpers"
+
 function MapEditorUI:init(config)
     self.offsetX = config['offsetX']
     self.offsetY = config['offsetY']
@@ -7,42 +10,57 @@ function MapEditorUI:init(config)
     self.width = config['tileWidth'] * config['tileCount']
     self.mapEditorContext = config['mapEditorContext']
     self.tileSheet = love.graphics.newImage(config['spriteSheet'])
-    self.tileButtons = self:createTileButtons(config)
+    -- self.tileButtons = self:createTileButtons(config)
     self.padding = 2
     self.prevMouseDown = false
 end
 
 function MapEditorUI:render()
-    -- self:debug()
+    local config = {
+        left = self.offsetX,
+        top = self.offsetY,
+        width = 480,
+        height = 30,
+        label = "Spritesheet"
+    }
+    helper.drawBox(config)
+    love.graphics.setColor(1,1,1)
     love.graphics.rectangle("line", self.offsetX - self.padding, self.offsetY - self.padding, self.width + (self.padding * 2), self.height + (self.padding * 2))
-    for i = 1,table.maxn(self.tileButtons)
-    do
-        local tile = self.tileButtons[i]
-        love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
-    end
+    -- for i = 1,table.maxn(self.tileButtons)
+    -- do
+    --     local tile = self.tileButtons[i]
+    --     love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
+    -- end
 end
 
-function MapEditorUI:createTileButtons(config)
-    local tileButtons = {}
-    local tiles = {}
-    local tw = config['tileWidth']
-    local th = config['tileHeight']
-    for i=1, config['tileCount']
-    do
-        tiles[i] = love.graphics.newQuad( (i - 1) * tw , 0, tw, th, self.tileSheet )
-    end
-    for i = 1, config['tileCount'] do
-        local tileConfig = {
-            ['x'] = ((i - 1) * tw) + self.offsetX,
-            ['y'] = self.offsetY,
-            ['width'] = tw,
-            ['height'] = th,
-            ['sprite'] = tiles[i]
-        }
-        tileButtons[i] = Tile(tileConfig)
-    end
-    return tileButtons
-end
+-- function displaySpriteSheet(tileButtons, tileSheet)
+--     do
+--         local tile = self.tileButtons[i]
+--         love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
+--     end
+-- end
+
+-- function MapEditorUI:createTileButtons(config)
+--     local tileButtons = {}
+--     local tiles = {}
+--     local tw = config['tileWidth']
+--     local th = config['tileHeight']
+--     for i=1, config['tileCount']
+--     do
+--         tiles[i] = love.graphics.newQuad( (i - 1) * tw , 0, tw, th, self.tileSheet )
+--     end
+--     for i = 1, config['tileCount'] do
+--         local tileConfig = {
+--             ['x'] = ((i - 1) * tw) + self.offsetX,
+--             ['y'] = self.offsetY,
+--             ['width'] = tw,
+--             ['height'] = th,
+--             ['sprite'] = tiles[i]
+--         }
+--         tileButtons[i] = Tile(tileConfig)
+--     end
+--     return tileButtons
+-- end
 
 function MapEditorUI:isWithinBounds(x,y)
     if x < self.offsetX then return false end
@@ -61,20 +79,20 @@ function MapEditorUI:update(dt)
 end
 
 function MapEditorUI:detectClick(x,y,button)
-    if self:isWithinBounds(x,y) then
-        print("Clicked on tile UI")
-        for i = 1, #self.tileButtons
-        do
-            if self.tileButtons[i]:isClickWithinTile(x,y) then
-                print("You clicked on title type " .. i)
-                self.mapEditorContext.selectedSpriteNumber = i
-            end
-        end
-    else
-        local res = {}
-        res["success"] = false
-        return res
-    end
+    -- if self:isWithinBounds(x,y) then
+    --     print("Clicked on tile UI")
+    --     for i = 1, #self.tileButtons
+    --     do
+    --         if self.tileButtons[i]:isClickWithinTile(x,y) then
+    --             print("You clicked on title type " .. i)
+    --             self.mapEditorContext.selectedSpriteNumber = i
+    --         end
+    --     end
+    -- else
+    --     local res = {}
+    --     res["success"] = false
+    --     return res
+    -- end
 end
 
 return MapEditorUI

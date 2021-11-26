@@ -1,5 +1,7 @@
 Button = Class{}
 
+local helper = require "libs.tilemap2d.helpers"
+
 -- Note buttons are "debounced", you need to click AND release on the button to activate it
 
 function Button:init(config)
@@ -18,16 +20,21 @@ function Button:init(config)
 end
 
 function Button:draw()
-    love.graphics.rectangle('line', self.left, self.top, self.width, self.height)
-    love.graphics.setFont(Fonts['medium'])
-    love.graphics.print(self.label, self.left + 2, self.top)
+    local config = {
+        left = self.left,
+        top = self.top,
+        width = self.width,
+        height = self.height,
+        label = self.label
+    }
+    if self.clicked then
+        config.pressed = true
+    end
+    helper.drawBox(config)
 end
 
 function Button:mousereleased(x, y, button)
-    -- print("mousereleased: " .. self.label)
-    -- print("x: " .. x .. " y: " .. y .. " button: " .. tostring(button))
-    if self.clicked == true and button == 1 and x >= self.left and x <= self.right and y >= self.top and y <= self.bottom then
-        print("qwe: " .. self.label )
+    if self.clicked and button == 1 and x >= self.left and x <= self.right and y >= self.top and y <= self.bottom then
         if self.optionalParam then
             self.boundObj[self.clickHandler](self.boundObj, self.optionalParam)
         else
@@ -40,7 +47,6 @@ end
 function Button:mouseClick(x, y, button)
     if button == 1 and x >= self.left and x <= self.right and y >= self.top and y <= self.bottom then
         self.clicked = true
-        print("Btn clicked")
     end
 end
 
