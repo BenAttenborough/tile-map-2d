@@ -1,6 +1,6 @@
 TileMap2d = Class{}
 
-require 'libs.tilemap2d.Tile'
+local Tile = require 'libs.tilemap2d.Tile'
 
 function TileMap2d:init(config)
     self.map = self:convertMap(config)
@@ -48,8 +48,6 @@ function TileMap2d:save()
         print ('file not created: '..message)
     end
 end
-
-
 
 function TileMap2d:serializeMap(mapData)    
     local data = table.maxn(mapData[1]) .. ','
@@ -128,3 +126,5 @@ end
 function TileMap2d:updateMap(row, col, spriteNumber)
     self.map[row][col]:setTileSprite(spriteNumber, self.tileSheet)
 end
+
+return TileMap2d

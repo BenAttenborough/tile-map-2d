@@ -21,3 +21,5 @@ function Tile:setTileSprite(spriteNumber, tileSheet)
     self.sprite = love.graphics.newQuad( (spriteNumber - 1) * self.width , 0, self.width, self.height, tileSheet )
     self.spriteNumber = spriteNumber
 end
+
+return Tile

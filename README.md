@@ -42,3 +42,6 @@ Ways for a child object to run functions / interact with parent object.
     1. Use a global table
     2. Pass the parent obejct into the child
     3. Child object can have a function which returns value, parent object calls function in update loop
+
+Need to do a file system
+Need to store files somewhere. By default it stores it
