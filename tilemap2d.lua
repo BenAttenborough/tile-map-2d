@@ -30,11 +30,11 @@ function TileMap2d:draw(offsetX, offsetY)
         do
             if x >= tileToStart and x<= tileToEnd then
                 local tile = self.map[y][x]
-                love.graphics.draw(self.tileSheet, tile.sprite, tile.x + offsetX, tile.y + offsetY)
+                love.graphics.draw(self.tileSheet, tile.sprite, tile.x, tile.y)
             end
         end
     end
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(0.2,0.2,0.2)
     love.graphics.rectangle("fill", (self.offsetx - self.tw), self.offsety, self.tw, self.mh )
     love.graphics.rectangle("fill", (self.offsetx + self.mw), self.offsety, self.tw, self.mh )
 end
@@ -126,5 +126,26 @@ end
 function TileMap2d:updateMap(row, col, spriteNumber)
     self.map[row][col]:setTileSprite(spriteNumber, self.tileSheet)
 end
+
+-- function TileMap2d:shiftRight()
+--     print("Shifting right")
+--     for col = 1, #self.map[1] do
+--         for row = 1, #self.map do
+--             self.map[row][col]:shiftRight()
+--         end
+--     end
+-- end
+
+function TileMap2d:shift(direction)
+    for col = 1, #self.map[1] do
+        for row = 1, #self.map do
+            if direction == "right" then self.map[row][col]:shiftRight() end
+            if direction == "left" then self.map[row][col]:shiftLeft() end
+            if direction == "up" then self.map[row][col]:shiftUp() end
+            if direction == "down" then self.map[row][col]:shiftDown() end
+        end
+    end
+end
+
 
 return TileMap2d

@@ -8,7 +8,7 @@ local MapEditorUI = require 'libs.tilemap2d.editor.MapEditorUI'
 require 'libs.tilemap2d.input'
 
 function MapEditor:init(config)
-    self.TileMap2d = {}
+    self.tileMap = {}
     self.selectionUI = {}
     self.loadButton = Button({
         x = 0,
@@ -40,7 +40,7 @@ function MapEditor:render()
     self.loadButton:draw()
     self:debug()
     if self.mapLoaded then
-        self.TileMap2d:draw(self.tileMapOffsetX, self.tileMapOffsetY)
+        self.tileMap:draw(self.tileMapOffsetX, self.tileMapOffsetY)
         self.selectionUI:render()
     end
     if self.loadWindowOpen then
@@ -52,11 +52,19 @@ function MapEditor:update(dt)
     if self.mapLoaded then
         self.selectionUI:update(dt)
         if love.keyboard.wasPressed("right") then
-            self.tileMapOffsetX = self.tileMapOffsetX - 1
+            self.tileMap:shift("right")
             love.keyboard.reset()
         end
         if love.keyboard.wasPressed("left") then
-            self.tileMapOffsetX = self.tileMapOffsetX + 1
+            self.tileMap:shift("left")
+            love.keyboard.reset()
+        end
+        if love.keyboard.wasPressed("up") then
+            self.tileMap:shift("up")
+            love.keyboard.reset()
+        end
+        if love.keyboard.wasPressed("down") then
+            self.tileMap:shift("down")
             love.keyboard.reset()
         end
     end
@@ -70,9 +78,9 @@ function MapEditor:update(dt)
             end
         end
         if self.mapLoaded then
-            local res = self.TileMap2d:detectClick(x, y, 1)
+            local res = self.tileMap:detectClick(x, y, 1)
             if res.success then
-                self.TileMap2d:updateMap(res.mapY, res.mapX, self.selectedSpriteNumber)
+                self.tileMap:updateMap(res.mapY, res.mapX, self.selectedSpriteNumber)
             end
         end
     end
@@ -80,7 +88,7 @@ function MapEditor:update(dt)
 end
 
 function MapEditor:save()
-    self.TileMap2d:save()
+    self.tileMap:save()
 end
 
 function MapEditor:renderLoadWindow()
@@ -132,7 +140,7 @@ function MapEditor:load()
     tileConfig['spriteCount'] = 4
     tileConfig['offsetX'] = 20
     tileConfig['offsetY'] = 50
-    self.TileMap2d = TileMap2d(tileConfig)
+    self.tileMap = TileMap2d(tileConfig)
     local selectionUIConfig = {}
     selectionUIConfig['offsetX'] = 0
     selectionUIConfig['offsetY'] = 165
