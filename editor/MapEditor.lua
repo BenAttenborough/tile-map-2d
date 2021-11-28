@@ -53,10 +53,12 @@ function MapEditor:update(dt)
         self.selectionUI:update(dt)
         if love.keyboard.wasPressed("right") then
             self.tileMap:shift("right")
+            self.tileMapOffsetX = self.tileMapOffsetX - 1
             love.keyboard.reset()
         end
         if love.keyboard.wasPressed("left") then
             self.tileMap:shift("left")
+            self.tileMapOffsetX = self.tileMapOffsetX + 1
             love.keyboard.reset()
         end
         if love.keyboard.wasPressed("up") then
@@ -143,7 +145,7 @@ function MapEditor:load()
     self.tileMap = TileMap2d(tileConfig)
     local selectionUIConfig = {}
     selectionUIConfig['offsetX'] = 0
-    selectionUIConfig['offsetY'] = 165
+    selectionUIConfig['offsetY'] = 164
     selectionUIConfig['spriteSheet'] = tileConfig['spriteSheet']
     selectionUIConfig['tileWidth'] = tileConfig['spriteSize']['width']
     selectionUIConfig['tileHeight'] = tileConfig['spriteSize']['height']

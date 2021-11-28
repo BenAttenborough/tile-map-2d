@@ -22,11 +22,6 @@ function Tile:setTileSprite(spriteNumber, tileSheet)
     self.spriteNumber = spriteNumber
 end
 
--- function Tile:setXY(x,y)
---     self.x = x
---     self.y = y
--- end
-
 function Tile:shiftRight()
     self.x = self.x - 1
 end

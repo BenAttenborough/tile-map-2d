@@ -127,15 +127,6 @@ function TileMap2d:updateMap(row, col, spriteNumber)
     self.map[row][col]:setTileSprite(spriteNumber, self.tileSheet)
 end
 
--- function TileMap2d:shiftRight()
---     print("Shifting right")
---     for col = 1, #self.map[1] do
---         for row = 1, #self.map do
---             self.map[row][col]:shiftRight()
---         end
---     end
--- end
-
 function TileMap2d:shift(direction)
     for col = 1, #self.map[1] do
         for row = 1, #self.map do
