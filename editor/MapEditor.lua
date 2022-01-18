@@ -1,4 +1,4 @@
-MapEditor = Class{}
+MapEditor = Class {}
 
 local Button = require 'libs.tilemap2d.Button'
 local TileMap2d = require 'libs.tilemap2d.TileMap2d'
@@ -17,7 +17,8 @@ function MapEditor:init(config)
         height = 14,
         label = 'Load',
         clickHandler = 'load',
-        boundObj = self})
+        boundObj = self
+    })
     self.saveButton = Button({
         x = 0,
         y = 215,
@@ -25,7 +26,8 @@ function MapEditor:init(config)
         height = 14,
         label = 'Save',
         clickHandler = 'save',
-        boundObj = self})
+        boundObj = self
+    })
     self.prevMouseDown = false
     self.mapLoaded = false
     self.loadWindowOpen = false
@@ -43,9 +45,7 @@ function MapEditor:render()
         self.tileMap:draw(self.tileMapOffsetX, self.tileMapOffsetY)
         self.selectionUI:render()
     end
-    if self.loadWindowOpen then
-        self:renderLoadWindow()
-    end
+    if self.loadWindowOpen then self:renderLoadWindow() end
 end
 
 function MapEditor:update(dt)
@@ -71,7 +71,7 @@ function MapEditor:update(dt)
         end
     end
     if love.mouse.isDown(1) and not self.prevMouseDown then
-        local x,y = Push:toGame(love.mouse.getX(), love.mouse.getY())
+        local x, y = Push:toGame(love.mouse.getX(), love.mouse.getY())
         self.loadButton:mouseClick(x, y, 1)
         self.saveButton:mouseClick(x, y, 1)
         if self.loadWindowOpen then
@@ -82,57 +82,49 @@ function MapEditor:update(dt)
         if self.mapLoaded then
             local res = self.tileMap:detectClick(x, y, 1)
             if res.success then
-                self.tileMap:updateMap(res.mapY, res.mapX, self.selectedSpriteNumber)
+                self.tileMap:updateMap(res.mapY, res.mapX,
+                                       self.selectedSpriteNumber)
             end
         end
     end
     self.prevMouseDown = love.mouse.isDown(1)
 end
 
-function MapEditor:save()
-    self.tileMap:save()
-end
+function MapEditor:save() self.tileMap:save() end
 
 function MapEditor:renderLoadWindow()
-    love.graphics.setColor(1,1,1)
-    love.graphics.rectangle('line', 10,10,200,100)
-    love.graphics.setColor(0,0,0)
-    love.graphics.rectangle('fill', 11,11,198,98)
-    love.graphics.setColor(1,1,1)
-    
-    
-    for k, button in ipairs(self.buttons) do
-        button:draw()
-    end
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.rectangle('line', 10, 10, 200, 100)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle('fill', 11, 11, 198, 98)
+    love.graphics.setColor(1, 1, 1)
+
+    for k, button in ipairs(self.buttons) do button:draw() end
 end
 
-function MapEditor:testLoad(test)
-    print(test)
-end
+function MapEditor:testLoad(test) print(test) end
 
 function MapEditor:getFiles()
     local dir = "levels"
     local files = love.filesystem.getDirectoryItems(dir)
     local y = 15
     for k, file in ipairs(files) do
-        table.insert(self.buttons, Button({
-            x = 15,
-            y = y,
-            width = 100,
-            height = 14,
-            label = file,
-            clickHandler = 'testLoad',
-            boundObj = self,
-            optionalParam = file}))
+        table.insert(self.buttons, Button(
+                         {
+                x = 15,
+                y = y,
+                width = 100,
+                height = 14,
+                label = file,
+                clickHandler = 'testLoad',
+                boundObj = self,
+                optionalParam = file
+            }))
         y = y + 20
     end
 end
 
 function MapEditor:load()
-    -- self:getFiles()
-    -- self.loadWindowOpen = true
-
-
     local tileConfig = {}
     tileConfig['map'] = self:loadFromFile()
     tileConfig['spriteSheet'] = 'sprites/tilemap.png'
@@ -158,23 +150,15 @@ end
 function MapEditor:mousereleased(x, y, button)
     self.saveButton:mousereleased(x, y, button)
     self.loadButton:mousereleased(x, y, button)
-    for k, item in ipairs(self.buttons) do
-        item:mousereleased(x, y, button)
-        -- print("Button down")
-    end
+    for k, item in ipairs(self.buttons) do item:mousereleased(x, y, button) end
 end
 
--- function MapEditor:click(x, y, button)
---     self.saveButton:mouseClick(x, y, button)
---     self.loadButton:mouseClick(x, y, button)
--- end
-
 function MapEditor:getDefaultMap()
-    local row1 = {1,1,1,2,2,3,1,3,2,3,1,1}
-    local row2 = {1,2,3,2,2,3,1,4,1,3,1,1}
-    local row3 = {1,1,4,2,2,3,1,1,1,1,1,1}
-    local row4 = {1,1,1,1,2,3,1,3,4,1,1,1}
-    local row5 = {1,3,1,2,4,1,1,3,2,3,1,1}
+    local row1 = {1, 1, 1, 2, 2, 3, 1, 3, 2, 3, 1, 1}
+    local row2 = {1, 2, 3, 2, 2, 3, 1, 4, 1, 3, 1, 1}
+    local row3 = {1, 1, 4, 2, 2, 3, 1, 1, 1, 1, 1, 1}
+    local row4 = {1, 1, 1, 1, 2, 3, 1, 3, 4, 1, 1, 1}
+    local row5 = {1, 3, 1, 2, 4, 1, 1, 3, 2, 3, 1, 1}
     local map = {}
     map[1] = row1
     map[2] = row2
@@ -185,11 +169,12 @@ function MapEditor:getDefaultMap()
 end
 
 function MapEditor:debug()
-    love.graphics.print("Selected tile no. " .. self.selectedSpriteNumber, 10, 245)
+    love.graphics.print("Selected tile no. " .. self.selectedSpriteNumber, 10,
+                        245)
 end
 
 function MapEditor:loadFromFile()
-    local mapString = love.filesystem.read( 'tilefile' )
+    local mapString = love.filesystem.read('tilefile')
     local firstComma = string.find(mapString, ',')
     local mapWidth = string.match(mapString, '([^,]+)')
     local mapOnlyString = string.sub(mapString, firstComma + 1)
@@ -216,17 +201,15 @@ end
 function MapEditor:debugMap(map)
     local result = ""
     for row = 1, #map do
-        for col = 1, #map[1] do
-            result = result .. map[row][col] .. ", "
-        end
+        for col = 1, #map[1] do result = result .. map[row][col] .. ", " end
         result = result .. " | "
     end
 end
 
 function MapEditor:serializeMap(mapData)
     local data = table.maxn(mapData[1]) .. ','
-    for x = 1,table.maxn(mapData) do
-        for y = 1,table.maxn(mapData[x]) do
+    for x = 1, table.maxn(mapData) do
+        for y = 1, table.maxn(mapData[x]) do
             data = data .. mapData[x][y] .. ','
         end
     end
